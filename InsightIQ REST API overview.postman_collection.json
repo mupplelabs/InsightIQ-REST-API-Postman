@@ -1,0 +1,853 @@
+{
+	"info": {
+		"_postman_id": "2cb21128-e835-49d0-82e7-399a59029a1c",
+		"name": "InsightIQ REST API overview",
+		"description": "InsightIQ 5.x supports public-facing REST APIs that provide similar functionality to the InsightIQ 4.x command-line interfaces.\n\nThe URI structure for the InsightIQ REST API is:\n\n```\n/insightiq/rest/<component>/v1/<resource>\n\n ```\n\nThe following table describes the reporting component and its resources.\n\nTable 1. Resources in the InsightIQ 5.x REST API\n\n| Component | Description | Resources |  |\n| --- | --- | --- | --- |\n|  |  | **Name** | **Description** |\n| `security-iam` | Manages PowerScale clusters that InsightIQ is monitoring. | `auth/login` `auth/logout` `auth/session` |  |\n| `clustermanager` | Manages authentication and sessions. | `clusters` |  |\n| `reporting` | Accesses and exports InsightIQ reports | `filters` | Filters for FSA or performance reports |\n|  |  | `fsa` | FSA reports |\n|  |  | `reports` | Performance reports |\n|  |  | `timeseries` | Used to export performance reports |\n\n---\n\n## Find more Information on:\n\n[PowerScale InsightIQ - Info Hub | Dell US](https://www.dell.com/support/kbdoc/en-us/000220129/powerscale-insightiq-info-hub?msockid=34d4f342a7486e252ff1e677a6486f6e)\n\n[Dell PowerScale InsightIQ 5.2.0 Administration Guide | Dell US](https://www.dell.com/support/manuals/en-us/powerscale-insight-iq/iiq_pub_insightiq_admin_guide_5_2/add-a-powerscale-cluster-to-insightiq?guid=guid-2fd67289-a402-42a9-9466-c2d23f87bbc5&lang=en-us)\n\n[Dell PowerScale InsightIQ 5.2.0 User Guide | Dell US](https://www.dell.com/support/manuals/en-us/powerscale-insight-iq/iiq_pub_insightiq_user_guide_5_2/export-a-performance-report?guid=guid-b3db20be-af13-4a43-b030-53774315d5ec&lang=en-us)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14293800"
+	},
+	"item": [
+		{
+			"name": "Authentication and session management",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"csrf-token\", decodeURIComponent(pm.cookies.get(\"csrf_token\")));\r",
+									"pm.collectionVariables.set(\"iiq-cookie\", decodeURIComponent(pm.cookies.get(\"insightiq_auth\")));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/login",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"security-iam",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Start an InsightIQ REST API session.\n\nThis API creates the following for the user:\n\n1. A new cookie (JWT token) in the Set-Cookie header as insightiq_auth=\n    \n2. A new x-csrf-token in the x-csrf-token header"
+					},
+					"response": []
+				},
+				{
+					"name": "Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/session",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"security-iam",
+								"v1",
+								"auth",
+								"session"
+							]
+						},
+						"description": "Get information about a session.\n\nThe API gets a session or validates the session. You must pass the session token and x-csrf-token as input. If the tokens are valid, the API validates the tokens and returns a response."
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code == 204) {\r",
+									"    pm.collectionVariables.set('csrf-token', '');\r",
+									"    pm.collectionVariables.set('iiq-cookie', '');\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/logout",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"security-iam",
+								"v1",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Log out from an InsightIQ REST API session."
+					},
+					"response": []
+				}
+			],
+			"description": "IIQ5.x REST API relys on a session based auhentication process. The `security-iam` section provides operations to authenticate to the API server and manage API sessions.\n\nTable 1. Authentication APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Authenticate and create a session. | `POST /insightiq/rest/security-iam/v1/auth/login/` |\n| Get session information. | `GET /insightiq/rest/security-iam/v1/auth/session/` |\n| Delete a session. | `POST /insightiq/rest/security-iam/v1/auth/logout/` |"
+		},
+		{
+			"name": "Cluster Management",
+			"item": [
+				{
+					"name": "Add Cluster",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set('GUID', \r",
+									"    jsonData.guid);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"host\": \"<HOST>\",\r\n    \"username\": \"<USERNAME>\",\r\n    \"password\": \"<PASSWORD>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/clustermanager/v1/clusters",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"clustermanager",
+								"v1",
+								"clusters"
+							]
+						},
+						"description": "Add a PowerScale cluster for InsightIQ to monitor."
+					},
+					"response": []
+				},
+				{
+					"name": "Cluster Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/clustermanager/v1/clusters",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"clustermanager",
+								"v1",
+								"clusters"
+							]
+						},
+						"description": "Get information and status about the PowerScale clusters that InsightIQ is monitoring. The output includes the cluster ID (`guid`)."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cluster",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"guid\": \"{{GUID}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/clustermanager/v1/clusters/{{GUID}}",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"clustermanager",
+								"v1",
+								"clusters",
+								"{{GUID}}"
+							]
+						},
+						"description": "This API removes a PowerScale cluster from InsightIQ.\n\n`DELETE /insightiq/rest/clustermanager/v1/clusters/<GUID>`"
+					},
+					"response": []
+				}
+			],
+			"description": "You can add, remove, and get the status of the PowerScale clusters that InsightIQ is monitoring.\n\nTable 1. Cluster management APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Add a PowerScale cluster to InsightIQ. | `POST /insightiq/rest/clustermanager/v1/clusters` |\n| Get the status and the  <br>of the PowerScale clusters that InsightIQ is monitoring. | `GET /insightiq/rest/clustermanager/v1/clusters` |\n| Remove a PowerScale cluster from InsightIQ. | `DELETE /insightiq/rest/clustermanager/v1/clusters/` |"
+		},
+		{
+			"name": "Filters",
+			"item": [
+				{
+					"name": "filters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/filters/types?filter_type=PERF",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"filters",
+								"types"
+							],
+							"query": [
+								{
+									"key": "filter_type",
+									"value": "FSA",
+									"disabled": true
+								},
+								{
+									"key": "filter_type",
+									"value": "PERF"
+								}
+							]
+						},
+						"description": "List breakouts associated with Performance or FSA reports, choose the `filter_type` in `Query Params`"
+					},
+					"response": []
+				}
+			],
+			"description": "Get a list of valid filters for each type of report.\n\nThere are separate filter lists for Performance Reporting and File System Analytics. The `filter_type` values are `FSA` or `PERF`.\n\nTable 1. Summary of filter APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| List breakouts associated with Performance or FSA reports | `GET https://:8000/insightiq/rest/reporting/v1/filters/ \\ types?filter_type=FSA`  <br>  <br>`GET https://:8000/insightiq/rest/reporting/v1/filters/ \\ types?filter_type=PERF` |\n| Get a list of possible values for a given filter rule. | `GET https://:8000/insightiq/rest/reporting/v1/filters/get_all_match_values \\ ?rule_name=&cluster=&rsid=` |\n\nThe API `GET .../filters/types` gets a list of possible breakouts. A graph may have specific filters applicable to it. This API gets the following:\n\n- The label of the filter\n    \n- The Advanced Filters section presents information about the filter values, such as:\n    \n    - Whether the filter has values that the `get_all_match_values` API can list\n        \n    - Whether you must manually add a value for a filter and then apply it\n        \n\nThe API `GET .../filters/get_all_match_values` gets a list of possible values for a given filter rule. The list appears under value in Advanced Filters. The FSA Result Set ID (`rsid`) and cluster are required only for FSA-specific filters."
+		},
+		{
+			"name": "FSA",
+			"item": [
+				{
+					"name": "Result Sets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/fsa/clusters/{{GUID}}/fsa/resultsets/published",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"fsa",
+								"clusters",
+								"{{GUID}}",
+								"fsa",
+								"resultsets",
+								"published"
+							]
+						},
+						"description": "Get the result set ID that is associated with an FSA report. The result set ID is required to export an FSA report."
+					},
+					"response": []
+				},
+				{
+					"name": "Report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/fsa/download_data?cluster={{GUID}}&rsid=61403&chart_type=grid-top-files&q&top_files",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"fsa",
+								"download_data"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
+								},
+								{
+									"key": "rsid",
+									"value": "61403"
+								},
+								{
+									"key": "chart_type",
+									"value": "grid-top-files"
+								},
+								{
+									"key": "q",
+									"value": null
+								},
+								{
+									"key": "comp_rsid",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "breakout_by",
+									"value": "path_ext",
+									"disabled": true
+								},
+								{
+									"key": "top_files",
+									"value": null
+								},
+								{
+									"key": "breakout_limit",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "top_dirs",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "log_size",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "phys_size",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "ctime",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "lin",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Export an FSA report.\n\nUse the `/insightiq/rest/reporting/v1/fsa/download_data` API with the GET method and the following parameters.\n\nTable 1. Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `cluster` | Specify the PowerScale cluster id (`guid`). |\n| `rsid` | Specify the result set ID by which the FSA report is identified. |\n| `chart_type` | Specify the chart type for the exported FSA report. The supported values for  <br>`chart_type` are:  <br>  <br>\\- `directories-browser`—This value requires an additional parameter. Specify `lin=x`, where `x` is the lin level. The default lin is 0 for the root of the `ifs` file system ( `/ifs`).  <br>  <br>\\- `fsa-histogram`—This value requires an additional parameter. Specify  <br>q with one of the following values:  <br>\\- `ctime`  <br>\\- `phys_size`  <br>\\- `log_size`  <br>  <br>\\- `grid-top-files`—This value requires an additional parameter. Specify  <br>q with one of the following values:  <br>\\- `top_files`  <br>\\- `top_dirs`  <br>  <br>\\- `grid-top-dirs`—This value requires an additional parameter. Specify  <br>`q` with one of the following values:  <br>\\- `top_files`  <br>\\- `top_dirs` |\n| `q` | Use this parameter in combination with  <br>`chart_type` values. See the previous descriptions for instances where the  <br>`q` parameter is required. |\n| `comp_rsid` | Use this parameter to compare the current report with another report. Specify the result set ID of the report to compare against. |\n| `breakout_by` | Specify the type of breakout to apply to the exported data. See  <br>Table 2 below. |\n| `breakout_limit` | Specify a limit for the breakout. |\n| `filter` | Specify the filter to apply to exported data. To specify a filter, you must specify the breakout that the filter applies to. See  <br>Table 3 below. |\n\nTable 2. Breakout values\n\n| Breakout description | Breakout value |\n| --- | --- |\n| Accessed Time | `atime` |\n| Directory | `directory` |\n| File Extension | `path_ext` |\n| Logical Size | `log_size` |\n| Changed Time | `ctime` |\n| Node Pool | `node_pool` |\n| Physical Size | `phys_size` |\n| Tier | `tier` |\n| User Attribute | `attribute` |\n\nTable 3. Filter values\n\n| Breakout description | Breakout value | Filter values |\n| --- | --- | --- |\n| Accessed Time | `atime` | The following values are valid:  <br>\\-60  <br>Specifies 0:00:00 - 0:01:00  <br>\\-3600  <br>Specifies 0:01:00 - 1:00:00  <br>\\-86400  <br>Specifies 1:00:00 - 1 day  <br>\\-604800  <br>Specifies 1 day - 7 days  <br>\\-2592000  <br>Specifies 7 days - 30 days  <br>\\-5184000  <br>Specifies 30 days - 60 days  <br>\\-7776000  <br>Specifies 60 days - 90 days  <br>\\-15552000  <br>Specifies 90 days - 180 days  <br>\\-31536000  <br>Specifies 180 days - 365 days  <br>\\-63072000  <br>Specifies 365 days - 730 days  <br>Infinity  <br>Specifies 730 days - Infinity  <br>For example:  <br>`atime:-3600` |\n| Directory | `directory` | The path of a directory starting with  <br>/ifs in the following format:  <br>  <br>`directory:/ifs/data/media` |\n| File Extension | `path_ext` | The name of a file extension in the following format:  <br>`path_ext:txt` |\n| Logical Size | `log_size` | A range of sizes in the following format:  <br>  <br>`<integer><unit>-<integer><unit>`  <br>  <br>0  <br>Specifies 0 byes - 8 KB  <br>8192  <br>Specifies 8 KB - 128 KB  <br>131072  <br>Specifies 128 KB - 1 MB  <br>1048576  <br>Specifies 1 MB - 10 MB  <br>10485760  <br>Specifies 10 MB - 100 MB  <br>104857600  <br>Specifies 100 MB - 1 GB  <br>1073741824  <br>Specifies 1 GB - 10 GB  <br>10737418240  <br>Specifies 10 GB - 100 GB  <br>107374182400  <br>Specifies 100 GB - 1 TB  <br>1099511627776  <br>Specifies 1 TB - Infinity  <br>For example:  <br>`log_size:1GB-10GB` |\n| Changed Time | `ctime` | The following values are valid:  <br>\\-60  <br>Specifies 0:00:00 - 0:01:00  <br>\\-3600  <br>Specifies 0:01:00 - 1:00:00  <br>\\-86400  <br>Specifies 1:00:00 - 1 day  <br>\\-604800  <br>Specifies 1 day - 7 days  <br>\\-2592000  <br>Specifies 7 days - 30 days  <br>\\-5184000  <br>Specifies 30 days - 60 days  <br>\\-7776000  <br>Specifies 60 days - 90 days  <br>\\-15552000  <br>Specifies 90 days - 180 days  <br>\\-31536000  <br>Specifies 180 days - 365 days  <br>\\-63072000  <br>Specifies 365 days - 730 days  <br>Infinity  <br>Specifies 730 days - Infinity  <br>For example:  <br>`ctime:-3600` |\n| Node Pool | `node_pool` | The name of a node pool:  <br>  <br>`node_pool:pool`  <br>  <br>NOTE:This filter option is available only if you monitor a PowerScale cluster that is running OneFS 8.0 or later. |\n| Physical Size | `phys_size` | A range of sizes in the following formats:  <br>  <br>`<integer><unit>-<integer><unit>`  <br>  <br>0  <br>Specifies 0 byes - 8 KB  <br>8192  <br>Specifies 8 KB - 128 KB  <br>131072  <br>Specifies 128 KB - 1 MB  <br>1048576  <br>Specifies 1 MB - 10 MB  <br>10485760  <br>Specifies 10 MB - 100 MB  <br>104857600  <br>Specifies 100 MB - 1 GB  <br>1073741824  <br>Specifies 1 GB - 10 GB  <br>10737418240  <br>Specifies 10 GB - 100 GB  <br>107374182400  <br>Specifies 100 GB - 1 TB  <br>1099511627776  <br>Specifies 1 TB - Infinity  <br>For example:  <br>`phys_size:1GB-10GB` |\n| Tier | `tier` | The name of a tier. For example:  <br>`tier:tier_name`  <br>  <br>NOTE:This filter option is available only if you monitor a cluster that is running OneFS 8.0 or later |\n| User Attribute | `attribute` | The name of a user attribute defined on the cluster. All characters are valid. |"
+					},
+					"response": []
+				}
+			],
+			"description": "You can get the result set ID for a defined report, and then export the report.\n\nTable 1. Summary of FSA report APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Get the result set IDs. | `GET https://:8000/insightiq/rest/reporting/v1/fsa/clusters//fsa/resultsets/published` |\n| Export an FSA report. | `GET https://:8000/insightiq/rest/reporting/v1/fsa/download_data?cluster=&rsid=` |"
+		},
+		{
+			"name": "performance",
+			"item": [
+				{
+					"name": "data element types",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/reports/data-element-types",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"reports",
+								"data-element-types"
+							]
+						},
+						"description": "Get a list of data element types used in performance reports.\n\nThe API GET `.../reports/data-element-types` shows data element types, module types (chart, table, and so on), the group the data element belongs to ( `performance`, `fsa`, `quota`, and so on), the filters that are applicable for a given chart, and the keys that are associated with a given chart."
+					},
+					"response": []
+				},
+				{
+					"name": "report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/download_data?cluster={{GUID}}&key=connected|lnn|32&start_time=1736143334&end_time=1738821734&filter=proto_name:s3",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"timeseries",
+								"download_data"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
+								},
+								{
+									"key": "key",
+									"value": "connected|lnn|32"
+								},
+								{
+									"key": "start_time",
+									"value": "1736143334"
+								},
+								{
+									"key": "end_time",
+									"value": "1738821734"
+								},
+								{
+									"key": "filter",
+									"value": "proto_name:s3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "You can export a performance report.\n\nTable 1. Summary of Performance report APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Get the data element types and keys that identify performance reports.  <br>NOTE:For a table of chart names and keys, see \"Get performance key\". | GET 8000/insightiq/rest/reporting/v1/reports/data-element-types |\n| Export a performance report for a specified cluster and time range. | GET /insightiq/rest/reporting/v1/timeseries/download_data?... |\n\n## Permission to view the Partitioned Performance report\n\nIf you have trouble viewing a Partitioned Performance report for a PowerScale cluster, there is a required configuration missing on the PowerScale cluster.\n\nTo view the Partitioned Performance report for a PowerScale cluster in InsightIQ, a PowerScale administrator must configure an additional privilege for the `insightiq` user account on the PowerScale cluster. The `insightiq` user account is a default user on PowerScale clusters.\n\n1. In the PowerScale OneFS web interface, create a new role.\n    \n2. Add the existing `insightiq` file system user under this new role.\n    \n3. Under **Privileges**, grant read permission to Performance: Configure performance resource accounting.\n    \n4. Click **Submit**."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "iiq-host",
+			"value": "iiq IP Adress or Host name",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "iiq-cookie",
+			"value": "be set during login",
+			"type": "string"
+		},
+		{
+			"key": "csrf-token",
+			"value": "be set during login",
+			"type": "string"
+		},
+		{
+			"key": "GUID",
+			"value": "a clusters GUID for reporting, will be populiated whem a cluster is added.",
+			"type": "string"
+		}
+	]
+}
