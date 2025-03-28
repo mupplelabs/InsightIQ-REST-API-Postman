@@ -1,6 +1,6 @@
-# InsightIQ-REST-API-Postman
+# PowerScale InsightIQ-REST-API-Postman
 
-InsightIQ 5.x supports public-facing REST APIs that provide similar functionality to the InsightIQ 4.x command-line interfaces.
+Dells PowerScale InsightIQ 5.x supports public-facing REST APIs that provide similar functionality to the InsightIQ 4.x command-line interfaces.
 This Postman Collection takes most of the IIQ REST API documentation into [Postman](https://www.postman.com/). 
 So InsightIQ users, administrators and developers can intereactively explore its capabilities.
 
