@@ -315,6 +315,65 @@
 					"response": []
 				},
 				{
+					"name": "overall_status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/clustermanager/v1/overall_status",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"clustermanager",
+								"v1",
+								"overall_status"
+							]
+						},
+						"description": "Get information and status about the PowerScale clusters that InsightIQ is monitoring. The output includes the cluster ID (`guid`)."
+					},
+					"response": []
+				},
+				{
 					"name": "Delete Cluster",
 					"event": [
 						{
@@ -373,6 +432,129 @@
 				}
 			],
 			"description": "You can add, remove, and get the status of the PowerScale clusters that InsightIQ is monitoring.\n\nTable 1. Cluster management APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Add a PowerScale cluster to InsightIQ. | `POST /insightiq/rest/clustermanager/v1/clusters` |\n| Get the status and the  <br>of the PowerScale clusters that InsightIQ is monitoring. | `GET /insightiq/rest/clustermanager/v1/clusters` |\n| Remove a PowerScale cluster from InsightIQ. | `DELETE /insightiq/rest/clustermanager/v1/clusters/` |"
+		},
+		{
+			"name": "Alerts",
+			"item": [
+				{
+					"name": "summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							},
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/alerts/v1/summary",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"alerts",
+								"v1",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "start_time eq 100",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "end_time eq 1743511120",
+									"description": "['severity', 'start_time', 'end_time']",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generated_alerts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							},
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/alerts/v1/generated_alerts?filter=cluster_name eq sb1&order=generated_time.dsc&filter=severity ilike emergency",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"alerts",
+								"v1",
+								"generated_alerts"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "start_time eq 100",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "end_time eq 1743511120",
+									"description": "['severity', 'start_time', 'end_time']",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "cluster_name eq sb1"
+								},
+								{
+									"key": "order",
+									"value": "generated_time.dsc"
+								},
+								{
+									"key": "limit",
+									"value": "25",
+									"description": "max. 2048",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "filter",
+									"value": "severity ilike emergency"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Retrieve alerts from InsightsIQ."
 		},
 		{
 			"name": "Filters",
@@ -447,79 +629,9 @@
 						"description": "List breakouts associated with Performance or FSA reports, choose the `filter_type` in `Query Params`"
 					},
 					"response": []
-				}
-			],
-			"description": "Get a list of valid filters for each type of report.\n\nThere are separate filter lists for Performance Reporting and File System Analytics. The `filter_type` values are `FSA` or `PERF`.\n\nTable 1. Summary of filter APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| List breakouts associated with Performance or FSA reports | `GET https://:8000/insightiq/rest/reporting/v1/filters/ \\ types?filter_type=FSA`  <br>  <br>`GET https://:8000/insightiq/rest/reporting/v1/filters/ \\ types?filter_type=PERF` |\n| Get a list of possible values for a given filter rule. | `GET https://:8000/insightiq/rest/reporting/v1/filters/get_all_match_values \\ ?rule_name=&cluster=&rsid=` |\n\nThe API `GET .../filters/types` gets a list of possible breakouts. A graph may have specific filters applicable to it. This API gets the following:\n\n- The label of the filter\n    \n- The Advanced Filters section presents information about the filter values, such as:\n    \n    - Whether the filter has values that the `get_all_match_values` API can list\n        \n    - Whether you must manually add a value for a filter and then apply it\n        \n\nThe API `GET .../filters/get_all_match_values` gets a list of possible values for a given filter rule. The list appears under value in Advanced Filters. The FSA Result Set ID (`rsid`) and cluster are required only for FSA-specific filters."
-		},
-		{
-			"name": "FSA",
-			"item": [
-				{
-					"name": "Result Sets",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-csrf-token",
-								"value": "{{csrf-token}}",
-								"type": "text"
-							},
-							{
-								"key": "Cookie",
-								"value": "{{iiq-cookie}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/fsa/clusters/{{GUID}}/fsa/resultsets/published",
-							"protocol": "https",
-							"host": [
-								"{{iiq-host}}"
-							],
-							"port": "8000",
-							"path": [
-								"insightiq",
-								"rest",
-								"reporting",
-								"v1",
-								"fsa",
-								"clusters",
-								"{{GUID}}",
-								"fsa",
-								"resultsets",
-								"published"
-							]
-						},
-						"description": "Get the result set ID that is associated with an FSA report. The result set ID is required to export an FSA report."
-					},
-					"response": []
 				},
 				{
-					"name": "Report",
+					"name": "multiple_all_match_values",
 					"event": [
 						{
 							"listen": "test",
@@ -559,7 +671,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/fsa/download_data?cluster={{GUID}}&rsid=61403&chart_type=grid-top-files&q&top_files",
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/filters/get_multiple_all_match_values?cluster={{GUID}}&filter_types=tier&filter_types=nodepool&start_time=1711956240&end_time=1743513840",
 							"protocol": "https",
 							"host": [
 								"{{iiq-host}}"
@@ -570,8 +682,8 @@
 								"rest",
 								"reporting",
 								"v1",
-								"fsa",
-								"download_data"
+								"filters",
+								"get_multiple_all_match_values"
 							],
 							"query": [
 								{
@@ -579,77 +691,31 @@
 									"value": "{{GUID}}"
 								},
 								{
-									"key": "rsid",
-									"value": "61403"
+									"key": "filter_types",
+									"value": "tier"
 								},
 								{
-									"key": "chart_type",
-									"value": "grid-top-files"
+									"key": "filter_types",
+									"value": "nodepool"
 								},
 								{
-									"key": "q",
-									"value": null
+									"key": "start_time",
+									"value": "1711956240"
 								},
 								{
-									"key": "comp_rsid",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "breakout_by",
-									"value": "path_ext",
-									"disabled": true
-								},
-								{
-									"key": "top_files",
-									"value": null
-								},
-								{
-									"key": "breakout_limit",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "filter",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "top_dirs",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "log_size",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "phys_size",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "ctime",
-									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "lin",
-									"value": null,
-									"disabled": true
+									"key": "end_time",
+									"value": "1743513840"
 								}
 							]
-						},
-						"description": "Export an FSA report.\n\nUse the `/insightiq/rest/reporting/v1/fsa/download_data` API with the GET method and the following parameters.\n\nTable 1. Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `cluster` | Specify the PowerScale cluster id (`guid`). |\n| `rsid` | Specify the result set ID by which the FSA report is identified. |\n| `chart_type` | Specify the chart type for the exported FSA report. The supported values for  <br>`chart_type` are:  <br>  <br>\\- `directories-browser`—This value requires an additional parameter. Specify `lin=x`, where `x` is the lin level. The default lin is 0 for the root of the `ifs` file system ( `/ifs`).  <br>  <br>\\- `fsa-histogram`—This value requires an additional parameter. Specify  <br>q with one of the following values:  <br>\\- `ctime`  <br>\\- `phys_size`  <br>\\- `log_size`  <br>  <br>\\- `grid-top-files`—This value requires an additional parameter. Specify  <br>q with one of the following values:  <br>\\- `top_files`  <br>\\- `top_dirs`  <br>  <br>\\- `grid-top-dirs`—This value requires an additional parameter. Specify  <br>`q` with one of the following values:  <br>\\- `top_files`  <br>\\- `top_dirs` |\n| `q` | Use this parameter in combination with  <br>`chart_type` values. See the previous descriptions for instances where the  <br>`q` parameter is required. |\n| `comp_rsid` | Use this parameter to compare the current report with another report. Specify the result set ID of the report to compare against. |\n| `breakout_by` | Specify the type of breakout to apply to the exported data. See  <br>Table 2 below. |\n| `breakout_limit` | Specify a limit for the breakout. |\n| `filter` | Specify the filter to apply to exported data. To specify a filter, you must specify the breakout that the filter applies to. See  <br>Table 3 below. |\n\nTable 2. Breakout values\n\n| Breakout description | Breakout value |\n| --- | --- |\n| Accessed Time | `atime` |\n| Directory | `directory` |\n| File Extension | `path_ext` |\n| Logical Size | `log_size` |\n| Changed Time | `ctime` |\n| Node Pool | `node_pool` |\n| Physical Size | `phys_size` |\n| Tier | `tier` |\n| User Attribute | `attribute` |\n\nTable 3. Filter values\n\n| Breakout description | Breakout value | Filter values |\n| --- | --- | --- |\n| Accessed Time | `atime` | The following values are valid:  <br>\\-60  <br>Specifies 0:00:00 - 0:01:00  <br>\\-3600  <br>Specifies 0:01:00 - 1:00:00  <br>\\-86400  <br>Specifies 1:00:00 - 1 day  <br>\\-604800  <br>Specifies 1 day - 7 days  <br>\\-2592000  <br>Specifies 7 days - 30 days  <br>\\-5184000  <br>Specifies 30 days - 60 days  <br>\\-7776000  <br>Specifies 60 days - 90 days  <br>\\-15552000  <br>Specifies 90 days - 180 days  <br>\\-31536000  <br>Specifies 180 days - 365 days  <br>\\-63072000  <br>Specifies 365 days - 730 days  <br>Infinity  <br>Specifies 730 days - Infinity  <br>For example:  <br>`atime:-3600` |\n| Directory | `directory` | The path of a directory starting with  <br>/ifs in the following format:  <br>  <br>`directory:/ifs/data/media` |\n| File Extension | `path_ext` | The name of a file extension in the following format:  <br>`path_ext:txt` |\n| Logical Size | `log_size` | A range of sizes in the following format:  <br>  <br>`<integer><unit>-<integer><unit>`  <br>  <br>0  <br>Specifies 0 byes - 8 KB  <br>8192  <br>Specifies 8 KB - 128 KB  <br>131072  <br>Specifies 128 KB - 1 MB  <br>1048576  <br>Specifies 1 MB - 10 MB  <br>10485760  <br>Specifies 10 MB - 100 MB  <br>104857600  <br>Specifies 100 MB - 1 GB  <br>1073741824  <br>Specifies 1 GB - 10 GB  <br>10737418240  <br>Specifies 10 GB - 100 GB  <br>107374182400  <br>Specifies 100 GB - 1 TB  <br>1099511627776  <br>Specifies 1 TB - Infinity  <br>For example:  <br>`log_size:1GB-10GB` |\n| Changed Time | `ctime` | The following values are valid:  <br>\\-60  <br>Specifies 0:00:00 - 0:01:00  <br>\\-3600  <br>Specifies 0:01:00 - 1:00:00  <br>\\-86400  <br>Specifies 1:00:00 - 1 day  <br>\\-604800  <br>Specifies 1 day - 7 days  <br>\\-2592000  <br>Specifies 7 days - 30 days  <br>\\-5184000  <br>Specifies 30 days - 60 days  <br>\\-7776000  <br>Specifies 60 days - 90 days  <br>\\-15552000  <br>Specifies 90 days - 180 days  <br>\\-31536000  <br>Specifies 180 days - 365 days  <br>\\-63072000  <br>Specifies 365 days - 730 days  <br>Infinity  <br>Specifies 730 days - Infinity  <br>For example:  <br>`ctime:-3600` |\n| Node Pool | `node_pool` | The name of a node pool:  <br>  <br>`node_pool:pool`  <br>  <br>NOTE:This filter option is available only if you monitor a PowerScale cluster that is running OneFS 8.0 or later. |\n| Physical Size | `phys_size` | A range of sizes in the following formats:  <br>  <br>`<integer><unit>-<integer><unit>`  <br>  <br>0  <br>Specifies 0 byes - 8 KB  <br>8192  <br>Specifies 8 KB - 128 KB  <br>131072  <br>Specifies 128 KB - 1 MB  <br>1048576  <br>Specifies 1 MB - 10 MB  <br>10485760  <br>Specifies 10 MB - 100 MB  <br>104857600  <br>Specifies 100 MB - 1 GB  <br>1073741824  <br>Specifies 1 GB - 10 GB  <br>10737418240  <br>Specifies 10 GB - 100 GB  <br>107374182400  <br>Specifies 100 GB - 1 TB  <br>1099511627776  <br>Specifies 1 TB - Infinity  <br>For example:  <br>`phys_size:1GB-10GB` |\n| Tier | `tier` | The name of a tier. For example:  <br>`tier:tier_name`  <br>  <br>NOTE:This filter option is available only if you monitor a cluster that is running OneFS 8.0 or later |\n| User Attribute | `attribute` | The name of a user attribute defined on the cluster. All characters are valid. |"
+						}
 					},
 					"response": []
 				}
 			],
-			"description": "You can get the result set ID for a defined report, and then export the report.\n\nTable 1. Summary of FSA report APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Get the result set IDs. | `GET https://:8000/insightiq/rest/reporting/v1/fsa/clusters//fsa/resultsets/published` |\n| Export an FSA report. | `GET https://:8000/insightiq/rest/reporting/v1/fsa/download_data?cluster=&rsid=` |"
+			"description": "Get a list of valid filters for each type of report.\n\nThere are separate filter lists for Performance Reporting and File System Analytics. The `filter_type` values are `FSA` or `PERF`.\n\nTable 1. Summary of filter APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| List breakouts associated with Performance or FSA reports | `GET https://:8000/insightiq/rest/reporting/v1/filters/ \\ types?filter_type=FSA`  <br>  <br>`GET https://:8000/insightiq/rest/reporting/v1/filters/ \\ types?filter_type=PERF` |\n| Get a list of possible values for a given filter rule. | `GET https://:8000/insightiq/rest/reporting/v1/filters/get_all_match_values \\ ?rule_name=&cluster=&rsid=` |\n\nThe API `GET .../filters/types` gets a list of possible breakouts. A graph may have specific filters applicable to it. This API gets the following:\n\n- The label of the filter\n    \n- The Advanced Filters section presents information about the filter values, such as:\n    \n    - Whether the filter has values that the `get_all_match_values` API can list\n        \n    - Whether you must manually add a value for a filter and then apply it\n        \n\nThe API `GET .../filters/get_all_match_values` gets a list of possible values for a given filter rule. The list appears under value in Advanced Filters. The FSA Result Set ID (`rsid`) and cluster are required only for FSA-specific filters."
 		},
 		{
-			"name": "performance",
+			"name": "Performance",
 			"item": [
 				{
 					"name": "data element types",
@@ -788,12 +854,884 @@
 									"value": "proto_name:s3"
 								}
 							]
+						},
+						"description": "Download a given report in CSV Format."
+					},
+					"response": []
+				},
+				{
+					"name": "graph_data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/graph_data?cluster={{GUID}}&key=connected&start_time=1736143334&end_time=1738821734&filter=proto_name:s3&&",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"timeseries",
+								"graph_data"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
+								},
+								{
+									"key": "key",
+									"value": "connected"
+								},
+								{
+									"key": "start_time",
+									"value": "1736143334"
+								},
+								{
+									"key": "end_time",
+									"value": "1738821734"
+								},
+								{
+									"key": "filter",
+									"value": "proto_name:s3",
+									"description": "Applicable Filters: lnn, nodepool, tier, protocol "
+								},
+								{
+									"key": null,
+									"value": null,
+									"description": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/timeseries/breakout_data?key=connected%7Clnn%7C5&cluster=006016a068b6233a865c4013cda0cc368138&start_time=1740914382&end_time=1743506382&filter=proto_name%3As3"
+								},
+								{
+									"key": "",
+									"value": null,
+									"description": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/timeseries/graph_data?cluster=006016a068b6233a865c4013cda0cc368138&start_time=1740914382&end_time=1743506382&key=connected&filter=proto_name%3As3"
+								}
+							]
+						},
+						"description": "Retrieve a given performance report as JSON. Has the data used for the graph in IIQ only."
+					},
+					"response": []
+				},
+				{
+					"name": "breakout_data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/breakout_data?cluster={{GUID}}&key=connected|lnn|32&start_time=1736143334&end_time=1738821734&filter=proto_name:s3&&",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"timeseries",
+								"breakout_data"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
+								},
+								{
+									"key": "key",
+									"value": "connected|lnn|32"
+								},
+								{
+									"key": "start_time",
+									"value": "1736143334"
+								},
+								{
+									"key": "end_time",
+									"value": "1738821734"
+								},
+								{
+									"key": "filter",
+									"value": "proto_name:s3"
+								},
+								{
+									"key": null,
+									"value": null,
+									"description": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/timeseries/breakout_data?key=connected%7Clnn%7C5&cluster=006016a068b6233a865c4013cda0cc368138&start_time=1740914382&end_time=1743506382&filter=proto_name%3As3"
+								},
+								{
+									"key": "",
+									"value": null,
+									"description": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/timeseries/graph_data?cluster=006016a068b6233a865c4013cda0cc368138&start_time=1740914382&end_time=1743506382&key=connected&filter=proto_name%3As3"
+								}
+							]
+						},
+						"description": "Retrieve breakout data for a given report, in json format."
 					},
 					"response": []
 				}
 			],
-			"description": "You can export a performance report.\n\nTable 1. Summary of Performance report APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Get the data element types and keys that identify performance reports.  <br>NOTE:For a table of chart names and keys, see \"Get performance key\". | GET 8000/insightiq/rest/reporting/v1/reports/data-element-types |\n| Export a performance report for a specified cluster and time range. | GET /insightiq/rest/reporting/v1/timeseries/download_data?... |\n\n## Permission to view the Partitioned Performance report\n\nIf you have trouble viewing a Partitioned Performance report for a PowerScale cluster, there is a required configuration missing on the PowerScale cluster.\n\nTo view the Partitioned Performance report for a PowerScale cluster in InsightIQ, a PowerScale administrator must configure an additional privilege for the `insightiq` user account on the PowerScale cluster. The `insightiq` user account is a default user on PowerScale clusters.\n\n1. In the PowerScale OneFS web interface, create a new role.\n    \n2. Add the existing `insightiq` file system user under this new role.\n    \n3. Under **Privileges**, grant read permission to Performance: Configure performance resource accounting.\n    \n4. Click **Submit**."
+			"description": "The Performace Report API.\n\nTable 1. Summary of Performance report APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Get the data element types and keys that identify performance reports.  <br>NOTE:For a table of chart names and keys, see \"Get performance key\". | GET 8000/insightiq/rest/reporting/v1/reports/data-element-types |\n| Export a performance report for a specified cluster and time range. | GET /insightiq/rest/reporting/v1/timeseries/download_data?... |\n| Get a performance report in its native format. This is divided into two API Calls: |  |\n| Get Graph data, the data used to build the graphs in IIQ. | GET /insightiq/rest/reporting/v1/timeseries/graph_data?... |\n| Get breakout data, the timeseries data for a given data breakout. eg. by Node etc. | GET /insightiq/rest/reporting/v1/timeseries/breakout_data?... |\n\n## Permission to view the Partitioned Performance report\n\nIf you have trouble viewing a Partitioned Performance report for a PowerScale cluster, there is a required configuration missing on the PowerScale cluster.\n\nTo view the Partitioned Performance report for a PowerScale cluster in InsightIQ, a PowerScale administrator must configure an additional privilege for the `insightiq` user account on the PowerScale cluster. The `insightiq` user account is a default user on PowerScale clusters.\n\n1. In the PowerScale OneFS web interface, create a new role.\n    \n2. Add the existing `insightiq` file system user under this new role.\n    \n3. Under **Privileges**, grant read permission to Performance: Configure performance resource accounting.\n    \n4. Click **Submit**."
+		},
+		{
+			"name": "Filesystem Reporting",
+			"item": [
+				{
+					"name": "FSA",
+					"item": [
+						{
+							"name": "Result Sets",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/fsa/clusters/{{GUID}}/fsa/resultsets/published",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"fsa",
+										"clusters",
+										"{{GUID}}",
+										"fsa",
+										"resultsets",
+										"published"
+									]
+								},
+								"description": "Get the result set ID that is associated with an FSA report. The result set ID is required to export an FSA report."
+							},
+							"response": []
+						},
+						{
+							"name": "Report",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/fsa/download_data?cluster={{GUID}}&rsid=61403&chart_type=grid-top-files&q&top_files",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"fsa",
+										"download_data"
+									],
+									"query": [
+										{
+											"key": "cluster",
+											"value": "{{GUID}}"
+										},
+										{
+											"key": "rsid",
+											"value": "61403"
+										},
+										{
+											"key": "chart_type",
+											"value": "grid-top-files"
+										},
+										{
+											"key": "q",
+											"value": null
+										},
+										{
+											"key": "comp_rsid",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "breakout_by",
+											"value": "path_ext",
+											"disabled": true
+										},
+										{
+											"key": "top_files",
+											"value": null
+										},
+										{
+											"key": "breakout_limit",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "filter",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "top_dirs",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "log_size",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "phys_size",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "ctime",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "lin",
+											"value": null,
+											"disabled": true
+										}
+									]
+								},
+								"description": "## Export an FSA report.\n\nUse the `/insightiq/rest/reporting/v1/fsa/download_data` API with the GET method and the following parameters.\n\nTable 1. Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `cluster` | Specify the PowerScale cluster id (`guid`). |\n| `rsid` | Specify the result set ID by which the FSA report is identified. |\n| `chart_type` | Specify the chart type for the exported FSA report. The supported values for  <br>`chart_type` are:  <br>  <br>\\- `directories-browser`—This value requires an additional parameter. Specify `lin=x`, where `x` is the lin level. The default lin is 0 for the root of the `ifs` file system ( `/ifs`).  <br>  <br>\\- `fsa-histogram`—This value requires an additional parameter. Specify  <br>q with one of the following values:  <br>\\- `ctime`  <br>\\- `phys_size`  <br>\\- `log_size`  <br>  <br>\\- `grid-top-files`—This value requires an additional parameter. Specify  <br>q with one of the following values:  <br>\\- `top_files`  <br>\\- `top_dirs`  <br>  <br>\\- `grid-top-dirs`—This value requires an additional parameter. Specify  <br>`q` with one of the following values:  <br>\\- `top_files`  <br>\\- `top_dirs` |\n| `q` | Use this parameter in combination with  <br>`chart_type` values. See the previous descriptions for instances where the  <br>`q` parameter is required. |\n| `comp_rsid` | Use this parameter to compare the current report with another report. Specify the result set ID of the report to compare against. |\n| `breakout_by` | Specify the type of breakout to apply to the exported data. See  <br>Table 2 below. |\n| `breakout_limit` | Specify a limit for the breakout. |\n| `filter` | Specify the filter to apply to exported data. To specify a filter, you must specify the breakout that the filter applies to. See  <br>Table 3 below. |\n\nTable 2. Breakout values\n\n| Breakout description | Breakout value |\n| --- | --- |\n| Accessed Time | `atime` |\n| Directory | `directory` |\n| File Extension | `path_ext` |\n| Logical Size | `log_size` |\n| Changed Time | `ctime` |\n| Node Pool | `node_pool` |\n| Physical Size | `phys_size` |\n| Tier | `tier` |\n| User Attribute | `attribute` |\n\nTable 3. Filter values\n\n| Breakout description | Breakout value | Filter values |\n| --- | --- | --- |\n| Accessed Time | `atime` | The following values are valid:  <br>\\-60  <br>Specifies 0:00:00 - 0:01:00  <br>\\-3600  <br>Specifies 0:01:00 - 1:00:00  <br>\\-86400  <br>Specifies 1:00:00 - 1 day  <br>\\-604800  <br>Specifies 1 day - 7 days  <br>\\-2592000  <br>Specifies 7 days - 30 days  <br>\\-5184000  <br>Specifies 30 days - 60 days  <br>\\-7776000  <br>Specifies 60 days - 90 days  <br>\\-15552000  <br>Specifies 90 days - 180 days  <br>\\-31536000  <br>Specifies 180 days - 365 days  <br>\\-63072000  <br>Specifies 365 days - 730 days  <br>Infinity  <br>Specifies 730 days - Infinity  <br>For example:  <br>`atime:-3600` |\n| Directory | `directory` | The path of a directory starting with  <br>/ifs in the following format:  <br>  <br>`directory:/ifs/data/media` |\n| File Extension | `path_ext` | The name of a file extension in the following format:  <br>`path_ext:txt` |\n| Logical Size | `log_size` | A range of sizes in the following format:  <br>  <br>`-`  <br>  <br>0  <br>Specifies 0 byes - 8 KB  <br>8192  <br>Specifies 8 KB - 128 KB  <br>131072  <br>Specifies 128 KB - 1 MB  <br>1048576  <br>Specifies 1 MB - 10 MB  <br>10485760  <br>Specifies 10 MB - 100 MB  <br>104857600  <br>Specifies 100 MB - 1 GB  <br>1073741824  <br>Specifies 1 GB - 10 GB  <br>10737418240  <br>Specifies 10 GB - 100 GB  <br>107374182400  <br>Specifies 100 GB - 1 TB  <br>1099511627776  <br>Specifies 1 TB - Infinity  <br>For example:  <br>`log_size:1GB-10GB` |\n| Changed Time | `ctime` | The following values are valid:  <br>\\-60  <br>Specifies 0:00:00 - 0:01:00  <br>\\-3600  <br>Specifies 0:01:00 - 1:00:00  <br>\\-86400  <br>Specifies 1:00:00 - 1 day  <br>\\-604800  <br>Specifies 1 day - 7 days  <br>\\-2592000  <br>Specifies 7 days - 30 days  <br>\\-5184000  <br>Specifies 30 days - 60 days  <br>\\-7776000  <br>Specifies 60 days - 90 days  <br>\\-15552000  <br>Specifies 90 days - 180 days  <br>\\-31536000  <br>Specifies 180 days - 365 days  <br>\\-63072000  <br>Specifies 365 days - 730 days  <br>Infinity  <br>Specifies 730 days - Infinity  <br>For example:  <br>`ctime:-3600` |\n| Node Pool | `node_pool` | The name of a node pool:  <br>  <br>`node_pool:pool`  <br>  <br>NOTE:This filter option is available only if you monitor a PowerScale cluster that is running OneFS 8.0 or later. |\n| Physical Size | `phys_size` | A range of sizes in the following formats:  <br>  <br>`-`  <br>  <br>0  <br>Specifies 0 byes - 8 KB  <br>8192  <br>Specifies 8 KB - 128 KB  <br>131072  <br>Specifies 128 KB - 1 MB  <br>1048576  <br>Specifies 1 MB - 10 MB  <br>10485760  <br>Specifies 10 MB - 100 MB  <br>104857600  <br>Specifies 100 MB - 1 GB  <br>1073741824  <br>Specifies 1 GB - 10 GB  <br>10737418240  <br>Specifies 10 GB - 100 GB  <br>107374182400  <br>Specifies 100 GB - 1 TB  <br>1099511627776  <br>Specifies 1 TB - Infinity  <br>For example:  <br>`phys_size:1GB-10GB` |\n| Tier | `tier` | The name of a tier. For example:  <br>`tier:tier_name`  <br>  <br>NOTE:This filter option is available only if you monitor a cluster that is running OneFS 8.0 or later |\n| User Attribute | `attribute` | The name of a user attribute defined on the cluster. All characters are valid. |"
+							},
+							"response": []
+						}
+					],
+					"description": "You can get the result set ID for a defined report, and then export the report.\n\nTable 1. Summary of FSA report APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Get the result set IDs. | `GET https://:8000/insightiq/rest/reporting/v1/fsa/clusters//fsa/resultsets/published` |\n| Export an FSA report. | `GET https://:8000/insightiq/rest/reporting/v1/fsa/download_data?cluster=&rsid=` |"
+				},
+				{
+					"name": "Quotas",
+					"item": [
+						{
+							"name": "report_list",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/quota/get_report_list?cluster={{GUID}}&start_time=1743509280&end_time=1743512880&latest=false",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"quota",
+										"get_report_list"
+									],
+									"query": [
+										{
+											"key": "cluster",
+											"value": "{{GUID}}"
+										},
+										{
+											"key": "start_time",
+											"value": "1743509280"
+										},
+										{
+											"key": "end_time",
+											"value": "1743512880"
+										},
+										{
+											"key": "latest",
+											"value": "false"
+										}
+									]
+								},
+								"description": "Get a list of available Quota Reports."
+							},
+							"response": []
+						},
+						{
+							"name": "dir_quotas",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/quota/get_dir_quotas?cluster={{GUID}}&path=/ifs",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"quota",
+										"get_dir_quotas"
+									],
+									"query": [
+										{
+											"key": "cluster",
+											"value": "{{GUID}}"
+										},
+										{
+											"key": "path",
+											"value": "/ifs"
+										}
+									]
+								},
+								"description": "List directory quotas per path."
+							},
+							"response": []
+						},
+						{
+							"name": "dir_children",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/quota/get_dir_children?cluster={{GUID}}&sort=name&dir=ASC&root=true",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"quota",
+										"get_dir_children"
+									],
+									"query": [
+										{
+											"key": "cluster",
+											"value": "{{GUID}}"
+										},
+										{
+											"key": "path",
+											"value": "/ifs",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "name"
+										},
+										{
+											"key": "dir",
+											"value": "ASC"
+										},
+										{
+											"key": "root",
+											"value": "true"
+										}
+									]
+								},
+								"description": "Browse a clusters directory structure for quota information."
+							},
+							"response": []
+						}
+					],
+					"description": "Get Quota Reports from a given Cluster."
+				},
+				{
+					"name": "Capacity",
+					"item": [
+						{
+							"name": "calculations",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/capacity/calculations",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"capacity",
+										"calculations"
+									],
+									"query": [
+										{
+											"key": "cluster",
+											"value": "{{GUID}}",
+											"disabled": true
+										},
+										{
+											"key": "rsid",
+											"value": "61403",
+											"disabled": true
+										},
+										{
+											"key": "id",
+											"value": "0",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "graph_data",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/capacity/graph_data?cluster={{GUID}}&start_time=1740933360&end_time=1743525360",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"capacity",
+										"graph_data"
+									],
+									"query": [
+										{
+											"key": "cluster",
+											"value": "{{GUID}}"
+										},
+										{
+											"key": "start_time",
+											"value": "1740933360"
+										},
+										{
+											"key": "end_time",
+											"value": "1743525360"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Data Reduction Reporting",
+					"item": [
+						{
+							"name": "overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/drr/{{GUID}}/overview",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"reporting",
+										"v1",
+										"drr",
+										"{{GUID}}",
+										"overview"
+									],
+									"query": [
+										{
+											"key": "path",
+											"value": "/ifs",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "dir",
+											"value": "ASC",
+											"disabled": true
+										},
+										{
+											"key": "root",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/drr/00601685f89057a9a2674407fcc52b65e62e/overview",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Get DDR information."
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		}
 	],
 	"event": [
@@ -821,32 +1759,32 @@
 	"variable": [
 		{
 			"key": "iiq-host",
-			"value": "iiq IP Adress or Host name",
+			"value": "IIQ IP Adress or Hostname",
 			"type": "string"
 		},
 		{
 			"key": "username",
-			"value": "",
+			"value": "Username",
 			"type": "string"
 		},
 		{
 			"key": "password",
-			"value": "",
+			"value": "Password",
 			"type": "string"
 		},
 		{
 			"key": "iiq-cookie",
-			"value": "be set during login",
+			"value": "retrieved on login",
 			"type": "string"
 		},
 		{
 			"key": "csrf-token",
-			"value": "be set during login",
+			"value": "retrieved on login",
 			"type": "string"
 		},
 		{
 			"key": "GUID",
-			"value": "a clusters GUID for reporting, will be populiated whem a cluster is added.",
+			"value": "a clusters GUID",
 			"type": "string"
 		}
 	]
