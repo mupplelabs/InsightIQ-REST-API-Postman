@@ -4,7 +4,8 @@
 		"name": "InsightIQ REST API overview",
 		"description": "InsightIQ 5.x supports public-facing REST APIs that provide similar functionality to the InsightIQ 4.x command-line interfaces.\n\nThe URI structure for the InsightIQ REST API is:\n\n```\n/insightiq/rest/<component>/v1/<resource>\n\n ```\n\nThe following table describes the reporting component and its resources.\n\nTable 1. Resources in the InsightIQ 5.x REST API\n\n| Component | Description | Resources |  |\n| --- | --- | --- | --- |\n|  |  | **Name** | **Description** |\n| `security-iam` | Manages PowerScale clusters that InsightIQ is monitoring. | `auth/login` `auth/logout` `auth/session` |  |\n| `clustermanager` | Manages authentication and sessions. | `clusters` |  |\n| `reporting` | Accesses and exports InsightIQ reports | `filters` | Filters for FSA or performance reports |\n|  |  | `fsa` | FSA reports |\n|  |  | `reports` | Performance reports |\n|  |  | `timeseries` | Used to export performance reports |\n\n---\n\n## Find more Information on:\n\n[PowerScale InsightIQ - Info Hub | Dell US](https://www.dell.com/support/kbdoc/en-us/000220129/powerscale-insightiq-info-hub?msockid=34d4f342a7486e252ff1e677a6486f6e)\n\n[Dell PowerScale InsightIQ 5.2.0 Administration Guide | Dell US](https://www.dell.com/support/manuals/en-us/powerscale-insight-iq/iiq_pub_insightiq_admin_guide_5_2/add-a-powerscale-cluster-to-insightiq?guid=guid-2fd67289-a402-42a9-9466-c2d23f87bbc5&lang=en-us)\n\n[Dell PowerScale InsightIQ 5.2.0 User Guide | Dell US](https://www.dell.com/support/manuals/en-us/powerscale-insight-iq/iiq_pub_insightiq_user_guide_5_2/export-a-performance-report?guid=guid-b3db20be-af13-4a43-b030-53774315d5ec&lang=en-us)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14293800"
+		"_exporter_id": "14293800",
+		"_collection_link": "https://mupples-laboratories.postman.co/workspace/InsightIQ~ed384513-5ca6-4689-b083-15d0da7c0119/collection/14293800-2cb21128-e835-49d0-82e7-399a59029a1c?action=share&source=collection_link&creator=14293800"
 	},
 	"item": [
 		{
@@ -195,6 +196,489 @@
 			"description": "IIQ5.x REST API relys on a session based auhentication process. The `security-iam` section provides operations to authenticate to the API server and manage API sessions.\n\nTable 1. Authentication APIs\n\n| Operation | Method and URI |\n| --- | --- |\n| Authenticate and create a session. | `POST /insightiq/rest/security-iam/v1/auth/login/` |\n| Get session information. | `GET /insightiq/rest/security-iam/v1/auth/session/` |\n| Delete a session. | `POST /insightiq/rest/security-iam/v1/auth/logout/` |"
 		},
 		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Local Users",
+					"item": [
+						{
+							"name": "List Users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/users?sort_by=username&order=asc",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"security-iam",
+										"v1",
+										"auth",
+										"users"
+									],
+									"query": [
+										{
+											"key": "sort_by",
+											"value": "username"
+										},
+										{
+											"key": "order",
+											"value": "asc"
+										}
+									]
+								},
+								"description": "Log out from an InsightIQ REST API session."
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									},
+									{
+										"key": "Referer",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{TestUser}}\",\r\n    \"password\": \"{{TestPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/users",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"security-iam",
+										"v1",
+										"auth",
+										"users"
+									]
+								},
+								"description": "Log out from an InsightIQ REST API session."
+							},
+							"response": []
+						},
+						{
+							"name": "Get User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/users/{{TestUser}}",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"security-iam",
+										"v1",
+										"auth",
+										"users",
+										"{{TestUser}}"
+									]
+								},
+								"description": "Log out from an InsightIQ REST API session."
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_password\": \"{{TestPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/users/{{TestUser}}/reset-password",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"security-iam",
+										"v1",
+										"auth",
+										"users",
+										"{{TestUser}}",
+										"reset-password"
+									]
+								},
+								"description": "Log out from an InsightIQ REST API session."
+							},
+							"response": [
+								{
+									"name": "Reset Password",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-csrf-token",
+												"value": "{{csrf-token}}",
+												"type": "text"
+											},
+											{
+												"key": "Cookie",
+												"value": "{{iiq-cookie}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"new_password\": \"{{TestPassword}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/auth/users/{{TestUser}}/reset-password",
+											"protocol": "https",
+											"host": [
+												"{{iiq-host}}"
+											],
+											"port": "8000",
+											"path": [
+												"insightiq",
+												"rest",
+												"security-iam",
+												"v1",
+												"auth",
+												"users",
+												"{{TestUser}}",
+												"reset-password"
+											]
+										}
+									},
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "LDAP",
+					"item": [
+						{
+							"name": "Configure LDAP",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"is_enabled\": true,\r\n    \"uri\": \"ldap://192.168.188.10\",\r\n    \"search_base\": \"dc=mupples,=dc=lab\",\r\n    \"default_bind_dn\": \"cn=admin,ou=users,dc=mupples,dc=lab\",\r\n    \"default_authtok\": \"Testpassword\",\r\n    \"user_dn\": \"\",\r\n    \"group_dn\": \"\",\r\n    \"user_object_class\": \"posixAccount\",\r\n    \"group_object_class\": \"posixGroup\",\r\n    \"is_secure\": false,\r\n    \"is_insecure_skip_tls_ca_check\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/ldaps/default",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"security-iam",
+										"v1",
+										"ldaps",
+										"default"
+									]
+								},
+								"description": "Log out from an InsightIQ REST API session."
+							},
+							"response": [
+								{
+									"name": "Configure LDAP",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-csrf-token",
+												"value": "{{csrf-token}}",
+												"type": "text"
+											},
+											{
+												"key": "Cookie",
+												"value": "{{iiq-cookie}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"is_enabled\": true,\r\n    \"uri\": \"ldap://192.168.188.10\",\r\n    \"search_base\": \"dc=mupples,=dc=lab\",\r\n    \"default_bind_dn\": \"cn=admin,ou=users,dc=mupples,dc=lab\",\r\n    \"default_authtok\": \"Testpassword\",\r\n    \"user_dn\": \"\",\r\n    \"group_dn\": \"\",\r\n    \"user_object_class\": \"posixAccount\",\r\n    \"group_object_class\": \"posixGroup\",\r\n    \"is_secure\": false,\r\n    \"is_insecure_skip_tls_ca_check\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/ldaps/default",
+											"protocol": "https",
+											"host": [
+												"{{iiq-host}}"
+											],
+											"port": "8000",
+											"path": [
+												"insightiq",
+												"rest",
+												"security-iam",
+												"v1",
+												"ldaps",
+												"default"
+											]
+										}
+									},
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								}
+							]
+						},
+						{
+							"name": "Read LDAP Config",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"is_enabled\": true,\r\n    \"uri\": \"ldap://192.168.188.10\",\r\n    \"search_base\": \"dc=mupples,=dc=lab\",\r\n    \"default_bind_dn\": \"cn=admin,ou=users,dc=mupples,dc=lab\",\r\n    \"default_authtok\": \"Testpassword\",\r\n    \"user_dn\": \"\",\r\n    \"group_dn\": \"\",\r\n    \"user_object_class\": \"posixAccount\",\r\n    \"group_object_class\": \"posixGroup\",\r\n    \"is_secure\": false,\r\n    \"is_insecure_skip_tls_ca_check\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/security-iam/v1/ldaps/default",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"security-iam",
+										"v1",
+										"ldaps",
+										"default"
+									]
+								},
+								"description": "Log out from an InsightIQ REST API session."
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "Cluster Management",
 			"item": [
 				{
@@ -254,6 +738,111 @@
 						"description": "Add a PowerScale cluster for InsightIQ to monitor."
 					},
 					"response": []
+				},
+				{
+					"name": "Change Cluster",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"host\": \"<HOST>\",\r\n    \"username\": \"<USERNAME>\",\r\n    \"password\": \"<PASSWORD>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/clustermanager/v1/clusters/{{GUID}}",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"clustermanager",
+								"v1",
+								"clusters",
+								"{{GUID}}"
+							]
+						},
+						"description": "Add a PowerScale cluster for InsightIQ to monitor."
+					},
+					"response": [
+						{
+							"name": "GUID",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-csrf-token",
+										"value": "{{csrf-token}}",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "{{iiq-cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"host\": \"<HOST>\",\r\n    \"username\": \"<USERNAME>\",\r\n    \"password\": \"<PASSWORD>\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{iiq-host}}:8000/insightiq/rest/clustermanager/v1/clusters/{{GUID}}",
+									"protocol": "https",
+									"host": [
+										"{{iiq-host}}"
+									],
+									"port": "8000",
+									"path": [
+										"insightiq",
+										"rest",
+										"clustermanager",
+										"v1",
+										"clusters",
+										"{{GUID}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
 					"name": "Cluster Status",
@@ -1785,6 +2374,16 @@
 		{
 			"key": "GUID",
 			"value": "a clusters GUID",
+			"type": "string"
+		},
+		{
+			"key": "TestUser",
+			"value": "a user to test Remote User Management",
+			"type": "string"
+		},
+		{
+			"key": "TestPassword",
+			"value": "Password for TestUser",
 			"type": "string"
 		}
 	]
