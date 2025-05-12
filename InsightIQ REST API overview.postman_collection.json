@@ -1582,7 +1582,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/breakout_data?cluster={{GUID}}&key=connected|lnn|32&start_time=1736143334&end_time=1738821734&filter=proto_name:s3&&",
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/breakout_data?cluster={{GUID}}&key=op_rate|lnn|32&filter=proto_name:papi&filter=remote_addr:192.168.188.66",
 							"protocol": "https",
 							"host": [
 								"{{iiq-host}}"
@@ -1602,30 +1602,251 @@
 									"value": "{{GUID}}"
 								},
 								{
-									"key": "key",
-									"value": "connected|lnn|32"
-								},
-								{
 									"key": "start_time",
-									"value": "1736143334"
+									"value": "1747036959",
+									"disabled": true
 								},
 								{
 									"key": "end_time",
-									"value": "1738821734"
+									"value": "1747040559",
+									"disabled": true
+								},
+								{
+									"key": "key",
+									"value": "op_rate|lnn|32"
 								},
 								{
 									"key": "filter",
-									"value": "proto_name:s3"
+									"value": "proto_name:papi"
 								},
 								{
-									"key": null,
-									"value": null,
-									"description": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/timeseries/breakout_data?key=connected%7Clnn%7C5&cluster=006016a068b6233a865c4013cda0cc368138&start_time=1740914382&end_time=1743506382&filter=proto_name%3As3"
+									"key": "filter",
+									"value": "remote_addr:192.168.188.66"
+								}
+							]
+						},
+						"description": "Retrieve breakout data for a given report, in json format."
+					},
+					"response": []
+				},
+				{
+					"name": "client summary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/summary/clients?cluster={{GUID}}&start_time=1747036059&end_time=1747039659",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"timeseries",
+								"summary",
+								"clients"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
 								},
 								{
-									"key": "",
-									"value": null,
-									"description": "https://10.231.152.55:8000/insightiq/rest/reporting/v1/timeseries/graph_data?cluster=006016a068b6233a865c4013cda0cc368138&start_time=1740914382&end_time=1743506382&key=connected&filter=proto_name%3As3"
+									"key": "start_time",
+									"value": "1747036059"
+								},
+								{
+									"key": "end_time",
+									"value": "1747039659"
+								}
+							]
+						},
+						"description": "Retrieve breakout data for a given report, in json format."
+					},
+					"response": []
+				},
+				{
+					"name": "node summary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/summary/nodes?cluster={{GUID}}&start_time=1747036059&end_time=1747039659",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"timeseries",
+								"summary",
+								"nodes"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
+								},
+								{
+									"key": "start_time",
+									"value": "1747036059"
+								},
+								{
+									"key": "end_time",
+									"value": "1747039659"
+								}
+							]
+						},
+						"description": "Retrieve breakout data for a given report, in json format."
+					},
+					"response": []
+				},
+				{
+					"name": "dataset summary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-csrf-token",
+								"value": "{{csrf-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "{{iiq-cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{iiq-host}}:8000/insightiq/rest/reporting/v1/timeseries/summary/datasets?cluster={{GUID}}&start_time=1747036059&end_time=1747039659",
+							"protocol": "https",
+							"host": [
+								"{{iiq-host}}"
+							],
+							"port": "8000",
+							"path": [
+								"insightiq",
+								"rest",
+								"reporting",
+								"v1",
+								"timeseries",
+								"summary",
+								"datasets"
+							],
+							"query": [
+								{
+									"key": "cluster",
+									"value": "{{GUID}}"
+								},
+								{
+									"key": "start_time",
+									"value": "1747036059"
+								},
+								{
+									"key": "end_time",
+									"value": "1747039659"
 								}
 							]
 						},
@@ -2362,18 +2583,13 @@
 			"type": "string"
 		},
 		{
-			"key": "iiq-cookie",
-			"value": "retrieved on login",
-			"type": "string"
-		},
-		{
 			"key": "csrf-token",
 			"value": "retrieved on login",
 			"type": "string"
 		},
 		{
-			"key": "GUID",
-			"value": "a clusters GUID",
+			"key": "iiq-cookie",
+			"value": "retrieved on login",
 			"type": "string"
 		},
 		{
@@ -2384,6 +2600,11 @@
 		{
 			"key": "TestPassword",
 			"value": "Password for TestUser",
+			"type": "string"
+		},
+		{
+			"key": "GUID",
+			"value": "A clusters GUID",
 			"type": "string"
 		}
 	]
